@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<!-- saved from url=(0055)file:///C:/Users/mweinberg/Downloads/XPortFinder_6.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>X-Port Finder — Bridge View Paper</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: #f0f2f5; color: #1a1a1a; min-height: 100vh;
+      display: flex; flex-direction: column;
+    }
+    /* TOP BAR */
+    .topbar {
+      background: #185FA5; padding: 0 1.5rem;
+      display: flex; align-items: center; justify-content: space-between;
+      height: 52px; flex-shrink: 0;
+    }
+    .topbar-left { display: flex; align-items: center; gap: 10px; }
+    .topbar-icon {
+      width: 30px; height: 30px; background: rgba(255,255,255,0.15); border-radius: 7px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .topbar-icon svg { width: 18px; height: 18px; fill: none; stroke: #fff; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+    .topbar-name { font-size: 15px; font-weight: 600; color: #fff; }
+    .topbar-name em { color: #a8d8ff; font-style: normal; }
+    .topbar-right { font-size: 11px; color: rgba(255,255,255,0.5); letter-spacing: 0.5px; }
+    /* HERO */
+    .hero {
+      background: linear-gradient(160deg, #185FA5 0%, #0d3d6e 100%);
+      padding: 2.25rem 1.5rem 2rem; text-align: center;
+    }
+    .hero-title { font-size: 30px; font-weight: 700; color: #fff; letter-spacing: -0.5px; margin-bottom: 5px; }
+    .hero-title em { color: #a8d8ff; font-style: normal; }
+    .hero-tag { font-size: 13px; color: rgba(255,255,255,0.6); font-style: italic; margin-bottom: 1.5rem; }
+    .hero-search { display: flex; gap: 8px; max-width: 560px; margin: 0 auto; }
+    .hero-search input {
+      flex: 1; height: 46px; padding: 0 14px; border: none;
+      border-radius: 10px; font-size: 15px; background: #fff; color: #1a1a1a;
+      outline: none; box-shadow: 0 2px 12px rgba(0,0,0,0.2);
+      min-width: 0;
+    }
+    .hero-search input::placeholder { color: #aaa; font-size: 14px; }
+    .hero-search button {
+      height: 46px; padding: 0 20px; background: #2d9e6b; color: #fff;
+      border: none; border-radius: 10px; font-size: 14px; font-weight: 600;
+      cursor: pointer; white-space: nowrap; transition: background 0.15s;
+      flex-shrink: 0;
+    }
+    .hero-search button:hover { background: #238055; }
+    .hero-search button:disabled { background: #7abfa0; cursor: not-allowed; }
+    /* MAIN */
+    .main { flex: 1; max-width: 680px; width: 100%; margin: 0 auto; padding: 1.5rem 1rem 2rem; }
+    .chips-label { font-size: 11px; font-weight: 600; color: #888; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 8px; }
+    .chips { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 1.5rem; }
+    .chip { font-size: 12px; padding: 5px 12px; border: 1.5px solid #d8dde6; border-radius: 99px; background: #fff; color: #555; cursor: pointer; transition: all 0.12s; }
+    .chip:hover { border-color: #185FA5; color: #185FA5; background: #EBF4FF; }
+    /* STATUS */
+    .status { font-size: 13px; padding: 10px 14px; border-radius: 10px; margin-bottom: 1rem; display: none; align-items: center; gap: 10px; background: #EBF4FF; border: 1px solid #b8d4f0; color: #185FA5; }
+    .spinner { width: 15px; height: 15px; border: 2px solid #b8d4f0; border-top-color: #185FA5; border-radius: 50%; animation: spin 0.7s linear infinite; flex-shrink: 0; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    /* NOTICES */
+    .notice { font-size: 13px; padding: 10px 14px; border-radius: 10px; margin-bottom: 1rem; display: none; }
+    .notice-warn { background: #FEF9EC; border: 1px solid #f5d97a; color: #7A5800; }
+    .notice-err { background: #FEF0F0; border: 1px solid #f5c2c2; color: #A32D2D; }
+    /* CARDS */
+    .card { background: #fff; border: 1px solid #e4e7ec; border-radius: 14px; padding: 1.1rem 1.25rem; margin-bottom: 0.9rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+    .card-recommended { border-left: 4px solid #2d9e6b; background: #f6fdf9; }
+    .card-port { border-left: 4px solid #185FA5; }
+    .card-rail { border-left: 4px solid #185FA5; }
+    .card-verdict { background: #f8f9fb; border: 1px solid #e4e7ec; border-left: 4px solid #BA7517; }
+    .badge-row { display: flex; align-items: center; gap: 7px; margin-bottom: 7px; flex-wrap: wrap; }
+    .badge { font-size: 11px; font-weight: 600; padding: 3px 9px; border-radius: 99px; display: inline-flex; align-items: center; gap: 3px; }
+    .badge-port { background: #E6F1FB; color: #0C447C; }
+    .badge-rail { background: #e4f7ee; color: #1a6645; }
+    .badge-rec { background: #d4f3e5; color: #155c38; font-size: 11px; }
+    .badge-alt { background: #f0f2f5; color: #555; }
+    .card-name { font-size: 17px; font-weight: 700; color: #1a1a1a; margin-bottom: 2px; }
+    .card-city { font-size: 12px; color: #888; margin-bottom: 12px; }
+    .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; }
+    .stat { background: #f5f6f8; border-radius: 8px; padding: 9px 12px; }
+    .stat-label { font-size: 10px; color: #888; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 2px; }
+    .stat-val { font-size: 16px; font-weight: 700; color: #1a1a1a; }
+    .meta { font-size: 13px; color: #555; margin-bottom: 6px; line-height: 1.5; }
+    .meta strong { color: #1a1a1a; font-weight: 600; }
+    .meta:last-child { margin-bottom: 0; }
+    .verdict-text { font-size: 13px; color: #1a1a1a; line-height: 1.6; }
+    .origin-note { font-size: 13px; color: #555; margin-bottom: 1rem; padding: 7px 13px; background: #fff; border-radius: 8px; border: 1px solid #e4e7ec; }
+    .origin-note strong { color: #185FA5; }
+    .section-label { font-size: 10px; font-weight: 700; color: #aaa; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; margin-top: 4px; }
+    /* FOOTER */
+    .footer {
+      background: #185FA5;
+      padding: 1.75rem 1.5rem;
+      display: flex; flex-direction: column; align-items: center; gap: 0.6rem;
+      flex-shrink: 0; text-align: center;
+    }
+    .footer-brand { font-size: 13px; font-weight: 600; color: rgba(255,255,255,0.85); letter-spacing: 0.3px; }
+    .footer-sub { font-size: 11px; color: rgba(255,255,255,0.4); }
+    .footer-powered { font-size: 11px; color: rgba(255,255,255,0.55); margin-top: 2px; }
+    .footer-powered strong { color: rgba(255,255,255,0.8); }
+    .footer-mw { font-size: 10px; color: rgba(255,255,255,0.18); letter-spacing: 3px; margin-top: 4px; font-weight: 300; }
+    /* MOBILE */
+    @media (max-width: 500px) {
+      .hero-title { font-size: 24px; }
+      .hero-search { flex-direction: column; }
+      .hero-search button { height: 44px; width: 100%; }
+      .topbar-right { display: none; }
+      .card-name { font-size: 15px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-left">
+    <div class="topbar-icon">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="2"></circle><line x1="12" y1="7" x2="12" y2="19"></line><path d="M5 11a7 7 0 0 0 14 0"></path><line x1="5" y1="19" x2="12" y2="19"></line><line x1="19" y1="19" x2="12" y2="19"></line></svg>
+    </div>
+    <div class="topbar-name"><em>X-Port</em> Finder</div>
+  </div>
+  <div class="topbar-right">BRIDGE VIEW PAPER • INTERNAL TOOL</div>
+</div>
+
+<div class="hero">
+  <div class="hero-title"><em>X-Port</em> Finder</div>
+  <div class="hero-tag">X marks the spot — find your nearest export port or rail ramp</div>
+  <div class="hero-search">
+    <input type="text" id="xp-input" placeholder="City and state — e.g. Edison NJ or Plant City FL">
+    <button id="xp-btn" onclick="runSearch()">Look up ↗</button>
+  </div>
+</div>
+
+<div class="main">
+  <div class="chips-label">Quick search</div>
+  <div class="chips" id="xp-chips"><span class="chip">Edison NJ</span><span class="chip">Plant City FL</span><span class="chip">Lower Merion PA</span><span class="chip">Biron WI</span><span class="chip">Memphis TN</span><span class="chip">Nashville TN</span><span class="chip">Columbus OH</span><span class="chip">Dallas TX</span><span class="chip">Chicago IL</span><span class="chip">Kansas City MO</span></div>
+  <div class="status" id="xp-status"><div class="spinner"></div><span>Looking up location…</span></div>
+  <div class="notice notice-warn" id="xp-warn"></div>
+  <div class="notice notice-err" id="xp-error"></div>
+  <div id="xp-results"></div>
+</div>
+
+<div class="footer">
+  <div class="footer-brand">Bridge View Paper Company, LLC</div>
+  <div class="footer-sub">Established 2005 • Philadelphia, PA</div>
+  <div class="footer-powered">Powered by <strong>BVP</strong></div>
+  <div class="footer-mw">M W</div>
+</div>
+
+<script>
+const PORTS=[{name:"Port of Savannah",city:"Savannah, GA",lat:32.08,lon:-81.09,carriers:["MSC","Hapag-Lloyd","Maersk","CMA CGM","Evergreen","ONE","Cosco","ZIM"],note:"Largest single-terminal port in North America. Excellent 40' HC capacity and broad inland reach."},{name:"Port of Charleston",city:"Charleston, SC",lat:32.78,lon:-79.94,carriers:["MSC","Hapag-Lloyd","Maersk","CMA CGM","Evergreen","ONE","ZIM","Yang Ming"],note:"Deep-water port with strong East Coast Asia and Europe service."},{name:"Port of Wilmington",city:"Wilmington, NC",lat:34.23,lon:-77.95,carriers:["MSC","Hapag-Lloyd","CMA CGM","Evergreen"],note:"Growing NC port. Good option for Carolinas origins to avoid longer drayage to Savannah or Charleston."},{name:"Port of Virginia (Norfolk)",city:"Norfolk, VA",lat:36.97,lon:-76.33,carriers:["MSC","Hapag-Lloyd","Maersk","CMA CGM","Evergreen","ONE","Cosco","ZIM","Yang Ming"],note:"Major East Coast hub. Deep-water capacity for all major vessel classes and strong rail connectivity."},{name:"Port of Baltimore",city:"Baltimore, MD",lat:39.27,lon:-76.58,carriers:["MSC","Hapag-Lloyd","Maersk","CMA CGM","ONE","ZIM"],note:"Strong container ops with good Midwest access via CSX. Competitive rates for Mid-Atlantic shippers."},{name:"Port of New York / Newark",city:"Newark, NJ",lat:40.69,lon:-74.15,carriers:["MSC","Hapag-Lloyd","Maersk","CMA CGM","Evergreen","ONE","Cosco","ZIM","Yang Ming"],note:"Largest East Coast port. Full carrier coverage across all major trade lanes."},{name:"Port of Jacksonville",city:"Jacksonville, FL",lat:30.33,lon:-81.66,carriers:["MSC","Hapag-Lloyd","Maersk","CMA CGM","Evergreen","ONE","ZIM"],note:"Growing container port with strong Southeast and Latin America coverage."},{name:"Port Everglades",city:"Fort Lauderdale, FL",lat:26.09,lon:-80.12,carriers:["MSC","Hapag-Lloyd","Maersk","CMA CGM","ONE","ZIM","Evergreen"],note:"Major South Florida port. Strong Latin America and Caribbean lanes. Less congested than Miami."},{name:"Port of Miami",city:"Miami, FL",lat:25.77,lon:-80.19,carriers:["MSC","Hapag-Lloyd","Maersk","CMA CGM","Evergreen","ONE","ZIM"],note:"Deep-water port with strong Latin America and Europe coverage."},{name:"Port of Mobile",city:"Mobile, AL",lat:30.69,lon:-88.04,carriers:["MSC","Hapag-Lloyd","Maersk","CMA CGM","ONE"],note:"Key Gulf port growing in container ops. Good rail connection via CSX and NS."},{name:"Port of Gulfport",city:"Gulfport, MS",lat:30.37,lon:-89.09,carriers:["MSC","CMA CGM","Evergreen"],note:"Smaller Gulf port. Useful for Mississippi and Alabama origins when Houston is too far."},{name:"Port of New Orleans",city:"New Orleans, LA",lat:29.95,lon:-90.07,carriers:["MSC","Hapag-Lloyd","Maersk","CMA CGM","ONE","ZIM"],note:"Key Gulf port with strong CN and BNSF rail access for Midwest cargo."},{name:"Port of Houston",city:"Houston, TX",lat:29.73,lon:-95.27,carriers:["MSC","Hapag-Lloyd","Maersk","CMA CGM","Evergreen","ONE","Cosco","ZIM","Yang Ming"],note:"Dominant Gulf Coast export hub. Full carrier coverage and strong Latin America, Asia, Europe lanes."},{name:"Port of Corpus Christi",city:"Corpus Christi, TX",lat:27.80,lon:-97.40,carriers:["MSC","Hapag-Lloyd","Maersk"],note:"Growing Texas export port. Useful for deep South Texas origins."},{name:"Port of Oakland",city:"Oakland, CA",lat:37.80,lon:-122.33,carriers:["MSC","Hapag-Lloyd","Maersk","CMA CGM","Evergreen","ONE","Cosco","ZIM","Yang Ming"],note:"Major West Coast port with strong Trans-Pacific service. Good alternative to LA/LB for NorCal origins."},{name:"Port of Los Angeles",city:"Los Angeles, CA",lat:33.74,lon:-118.27,carriers:["MSC","Hapag-Lloyd","Maersk","CMA CGM","Evergreen","ONE","Cosco","ZIM","Yang Ming"],note:"Largest US port by volume. Full Asia-Pacific coverage. High equipment demand."},{name:"Port of Long Beach",city:"Long Beach, CA",lat:33.75,lon:-118.22,carriers:["MSC","Hapag-Lloyd","Maersk","CMA CGM","Evergreen","ONE","Cosco","ZIM","Yang Ming"],note:"Second largest US port. Alongside LA provides the deepest carrier selection on the West Coast."},{name:"Port of Seattle / Tacoma",city:"Tacoma, WA",lat:47.27,lon:-122.41,carriers:["MSC","Hapag-Lloyd","Maersk","CMA CGM","Evergreen","ONE","Cosco","ZIM","Yang Ming"],note:"Pacific Northwest gateway. Strong Asia-Pacific service and BNSF/UP intermodal rail links."},{name:"Port of Portland",city:"Portland, OR",lat:45.52,lon:-122.67,carriers:["MSC","Hapag-Lloyd","Maersk","ONE"],note:"Niche West Coast port. Fewer carrier options but useful for Pacific Northwest origins."}];
+
+const RAMPS=[{name:"Memphis Intermodal (BNSF/CSX)",city:"Memphis, TN",lat:35.15,lon:-90.05,railroads:["BNSF","CSX"],note:"One of the busiest inland ramps in the US. Connects to Savannah, Houston, and LA/LB."},{name:"Nashville Intermodal (CSX/NS)",city:"Nashville, TN",lat:36.17,lon:-86.78,railroads:["CSX","Norfolk Southern"],note:"Growing mid-South ramp. Strong NS lanes to Savannah and CSX to East Coast ports."},{name:"Knoxville Intermodal (NS)",city:"Knoxville, TN",lat:35.96,lon:-83.92,railroads:["Norfolk Southern"],note:"East Tennessee ramp with NS connectivity to Savannah and Norfolk."},{name:"Atlanta Intermodal (NS/CSX)",city:"Atlanta, GA",lat:33.75,lon:-84.39,railroads:["Norfolk Southern","CSX"],note:"Major Southeast hub. Strong connections to Savannah and Charleston."},{name:"Birmingham Intermodal (NS/BNSF)",city:"Birmingham, AL",lat:33.52,lon:-86.80,railroads:["Norfolk Southern","BNSF"],note:"Southeast ramp connecting to Gulf ports and East Coast ports via NS."},{name:"Huntsville Intermodal (NS)",city:"Huntsville, AL",lat:34.73,lon:-86.59,railroads:["Norfolk Southern"],note:"Northern Alabama ramp with NS access to Savannah and East Coast."},{name:"Charlotte Intermodal (NS)",city:"Charlotte, NC",lat:35.23,lon:-80.84,railroads:["Norfolk Southern"],note:"Southeast ramp with direct NS lane to Savannah and Norfolk."},{name:"Greenville Intermodal (NS)",city:"Greenville, SC",lat:34.85,lon:-82.40,railroads:["Norfolk Southern"],note:"Upstate SC ramp. Efficient NS lane to Charleston and Savannah."},{name:"Columbus Intermodal (CSX/NS)",city:"Columbus, OH",lat:39.96,lon:-82.99,railroads:["CSX","Norfolk Southern"],note:"Key Midwest ramp with strong East Coast port connectivity."},{name:"Cincinnati Intermodal (CSX)",city:"Cincinnati, OH",lat:39.10,lon:-84.51,railroads:["CSX"],note:"Solid CSX connectivity to Norfolk, Baltimore, and New York."},{name:"Louisville Intermodal (CSX/NS)",city:"Louisville, KY",lat:38.25,lon:-85.76,railroads:["CSX","Norfolk Southern"],note:"Mid-South ramp. Strong CSX lanes to East Coast ports."},{name:"Indianapolis Intermodal (CSX/NS)",city:"Indianapolis, IN",lat:39.77,lon:-86.16,railroads:["CSX","Norfolk Southern"],note:"Midwest ramp with solid East Coast port access via both Class I railroads."},{name:"Detroit Intermodal (CSX/NS/CN)",city:"Detroit, MI",lat:42.33,lon:-83.05,railroads:["CSX","Norfolk Southern","CN"],note:"Upper Midwest ramp. Good Great Lakes and East Coast connectivity."},{name:"Chicago Intermodal (BNSF/UP/CSX/NS/CN)",city:"Chicago, IL",lat:41.88,lon:-87.63,railroads:["BNSF","UP","CSX","Norfolk Southern","CN"],note:"Largest intermodal hub in North America. Access to every major port and railroad."},{name:"Milwaukee Intermodal (CN/CP)",city:"Milwaukee, WI",lat:43.04,lon:-87.91,railroads:["CN","CP"],note:"Upper Midwest option. CN connection useful for Gulf and East Coast routing."},{name:"Minneapolis Intermodal (BNSF/UP/CP)",city:"Minneapolis, MN",lat:44.98,lon:-93.27,railroads:["BNSF","UP","CP"],note:"Upper Midwest hub with West Coast and Gulf lanes."},{name:"St. Louis Intermodal (BNSF/UP/CSX)",city:"St. Louis, MO",lat:38.63,lon:-90.20,railroads:["BNSF","UP","CSX"],note:"Central hub. Connects Midwest origins to both coasts and Gulf ports."},{name:"Kansas City Intermodal (BNSF/UP)",city:"Kansas City, MO",lat:39.10,lon:-94.58,railroads:["BNSF","UP"],note:"Central US hub. Strong West Coast rail via BNSF Transcon and Gulf via UP."},{name:"Omaha Intermodal (UP/BNSF)",city:"Omaha, NE",lat:41.26,lon:-95.94,railroads:["UP","BNSF"],note:"Plains ramp with solid West Coast and Gulf connectivity."},{name:"Dallas Intermodal (BNSF/UP)",city:"Dallas, TX",lat:32.78,lon:-96.80,railroads:["BNSF","UP"],note:"Major Texas ramp. Strong lanes to Houston, LA/LB, and West Coast ports."},{name:"San Antonio Intermodal (UP)",city:"San Antonio, TX",lat:29.42,lon:-98.49,railroads:["UP"],note:"South Texas ramp. UP lane to Houston and Gulf ports."},{name:"New Orleans Intermodal (CN/BNSF)",city:"New Orleans, LA",lat:29.95,lon:-90.10,railroads:["CN","BNSF"],note:"Gulf region ramp co-located near port. Strong for Mississippi Valley origins."},{name:"Denver Intermodal (BNSF/UP)",city:"Denver, CO",lat:39.74,lon:-104.98,railroads:["BNSF","UP"],note:"Mountain West ramp. Primary gateway to West Coast ports via both Class I lines."},{name:"Salt Lake City Intermodal (UP/BNSF)",city:"Salt Lake City, UT",lat:40.76,lon:-111.89,railroads:["UP","BNSF"],note:"Intermountain West ramp. Good West Coast access via UP and BNSF."},{name:"Phoenix Intermodal (BNSF/UP)",city:"Phoenix, AZ",lat:33.45,lon:-112.07,railroads:["BNSF","UP"],note:"Southwest ramp. Strong LA/LB connectivity via both transcontinental lines."},{name:"Albuquerque Intermodal (BNSF)",city:"Albuquerque, NM",lat:35.08,lon:-106.65,railroads:["BNSF"],note:"Southwest ramp on the BNSF Transcon. Good for New Mexico and West Texas origins."},{name:"Spokane Intermodal (BNSF/UP)",city:"Spokane, WA",lat:47.66,lon:-117.43,railroads:["BNSF","UP"],note:"Inland Pacific Northwest ramp. Gateway to Seattle/Tacoma port complex."},{name:"Portland Intermodal (UP/BNSF)",city:"Portland, OR",lat:45.52,lon:-122.68,railroads:["UP","BNSF"],note:"Pacific Northwest ramp co-located near port. Useful for Oregon and SW Washington cargo."}];
+
+const STATES={"alabama":"al","alaska":"ak","arizona":"az","arkansas":"ar","california":"ca","colorado":"co","connecticut":"ct","delaware":"de","florida":"fl","georgia":"ga","hawaii":"hi","idaho":"id","illinois":"il","indiana":"in","iowa":"ia","kansas":"ks","kentucky":"ky","louisiana":"la","maine":"me","maryland":"md","massachusetts":"ma","michigan":"mi","minnesota":"mn","mississippi":"ms","missouri":"mo","montana":"mt","nebraska":"ne","nevada":"nv","new hampshire":"nh","new jersey":"nj","new mexico":"nm","new york":"ny","north carolina":"nc","north dakota":"nd","ohio":"oh","oklahoma":"ok","oregon":"or","pennsylvania":"pa","rhode island":"ri","south carolina":"sc","south dakota":"sd","tennessee":"tn","texas":"tx","utah":"ut","vermont":"vt","virginia":"va","washington":"wa","west virginia":"wv","wisconsin":"wi","wyoming":"wy"};
+const SABBREVS=["al","ak","az","ar","ca","co","ct","de","fl","ga","hi","id","il","in","ia","ks","ky","la","me","md","ma","mi","mn","ms","mo","mt","ne","nv","nh","nj","nm","ny","nc","nd","oh","ok","or","pa","ri","sc","sd","tn","tx","ut","vt","va","wa","wv","wi","wy"];
+
+function parseInput(raw) {
+  let s = raw.toLowerCase().trim();
+  for (const [full, abbr] of Object.entries(STATES)) {
+    const re = new RegExp('\b' + full + '\b');
+    if (re.test(s)) { s = s.replace(re, abbr); break; }
+  }
+  s = s.replace(/,/g, ' ').replace(/\s+/g, ' ').trim();
+  const parts = s.split(' ');
+  const last = parts[parts.length - 1];
+  if (parts.length >= 2 && SABBREVS.includes(last)) {
+    return { city: parts.slice(0, -1).join(' '), state: last };
+  }
+  return { city: s, state: '' };
+}
+
+async function geocodeCensus(city, state) {
+  const q = state ? city + ', ' + state + ', USA' : city + ', USA';
+  const url = 'https://geocoding.geo.census.gov/geocoder/locations/onelineaddress?address=' + encodeURIComponent(q) + '&benchmark=Public_AR_Current&format=json';
+  const resp = await fetch(url);
+  const data = await resp.json();
+  const m = data.result && data.result.addressMatches;
+  if (m && m.length > 0) return { lat: m[0].coordinates.y, lon: m[0].coordinates.x, label: m[0].matchedAddress.split(',').slice(0,2).join(',').trim() };
+  return null;
+}
+
+async function geocodeNominatim(city, state) {
+  const q = state ? city + ', ' + state + ', USA' : city + ', USA';
+  const url = 'https://nominatim.openstreetmap.org/search?q=' + encodeURIComponent(q) + '&format=json&limit=1&countrycodes=us';
+  const resp = await fetch(url, { headers: { 'Accept-Language': 'en' } });
+  const data = await resp.json();
+  if (data && data.length > 0) return { lat: parseFloat(data[0].lat), lon: parseFloat(data[0].lon), label: data[0].display_name.split(',').slice(0,2).join(',').trim() };
+  return null;
+}
+
+function deg2rad(d){return d*Math.PI/180;}
+function hav(a,b,c,d){const R=3958.8,dL=deg2rad(c-a),dO=deg2rad(d-b),x=Math.sin(dL/2)**2+Math.cos(deg2rad(a))*Math.cos(deg2rad(c))*Math.sin(dO/2)**2;return R*2*Math.atan2(Math.sqrt(x),Math.sqrt(1-x));}
+function nearest(co,list){let best=null,bd=Infinity;list.forEach(p=>{const d=hav(co[0],co[1],p.lat,p.lon);if(d<bd){bd=d;best={...p,miles:Math.round(d),drive_hours:+(d/55).toFixed(1)};}});return best;}
+function recommend(port,rail){
+  if(rail.miles<60)return{pick:'RAIL',reason:'The rail ramp is only '+rail.miles+' miles away — a short truck move to load out intermodal. Cost-effective and straightforward.'};
+  if(port.miles<100)return{pick:'PORT',reason:'At '+port.miles+' miles, the port is close enough for a direct truck move. Simpler logistics and more booking flexibility.'};
+  if(port.miles>400&&rail.miles<port.miles*0.7)return{pick:'RAIL',reason:'At '+port.miles+' miles, direct trucking to port gets expensive. The rail ramp at '+rail.miles+' miles is the more cost-efficient move.'};
+  if(rail.miles<port.miles*0.55)return{pick:'RAIL',reason:'The rail ramp is significantly closer ('+rail.miles+' mi vs '+port.miles+' mi to port). Intermodal will likely save on drayage costs.'};
+  return{pick:'PORT',reason:'Port is '+port.miles+' miles out — workable for a direct truck move, and gives you more carrier selection and booking flexibility.'};
+}
+
+function sShip(){return '<svg style="width:13px;height:13px;display:inline;vertical-align:-2px;margin-right:4px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 20a2.4 2.4 0 0 0 2 1 2.4 2.4 0 0 0 2-1 2.4 2.4 0 0 1 2-1 2.4 2.4 0 0 1 2 1 2.4 2.4 0 0 0 2 1 2.4 2.4 0 0 0 2-1 2.4 2.4 0 0 1 2-1 2.4 2.4 0 0 1 2 1"/><path d="M4 18l-1-5h18l-2 5"/><path d="M11 12V5l-3 3"/><path d="M11 5h2"/></svg>';}
+function sTrain(){return '<svg style="width:13px;height:13px;display:inline;vertical-align:-2px;margin-right:4px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="14" rx="2"/><path d="M4 11h16"/><path d="M12 3v8"/><path d="M8 19l-2 2"/><path d="M16 19l2 2"/><path d="M8 17h8"/></svg>';}
+function sStar(){return '<svg style="width:12px;height:12px;display:inline;vertical-align:-1px;margin-right:3px;" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>';}
+function sRoute(){return '<svg style="width:14px;height:14px;display:inline;vertical-align:-2px;margin-right:6px;" viewBox="0 0 24 24" fill="none" stroke="#BA7517" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="19" r="3"/><path d="M9 19h8.5a3.5 3.5 0 0 0 0-7h-11a3.5 3.5 0 0 1 0-7H15"/><circle cx="18" cy="5" r="3"/></svg>';}
+
+function setLoading(on){
+  document.getElementById('xp-status').style.display=on?'flex':'none';
+  document.getElementById('xp-btn').disabled=on;
+  document.getElementById('xp-input').disabled=on;
+}
+
+function buildCard(item, type, isRec, isAlt) {
+  const isPort = type === 'port';
+  const recClass = isRec ? 'card-recommended' : (isPort ? 'card-port' : 'card-rail');
+  const badgeClass = isPort ? 'badge-port' : 'badge-rail';
+  const icon = isPort ? sShip() : sTrain();
+  const typeLabel = isPort ? 'Nearest port' : 'Nearest rail ramp';
+  const detailLabel = isPort ? '<strong>Carriers:</strong> ' + item.carriers.join(', ') : '<strong>Railroads:</strong> ' + item.railroads.join(', ');
+  return (
+    '<div class="card ' + recClass + '">' +
+    '<div class="badge-row">' +
+    '<span class="badge ' + badgeClass + '">' + icon + typeLabel + '</span>' +
+    (isRec ? '<span class="badge badge-rec">' + sStar() + 'Recommended move</span>' : '') +
+    (isAlt ? '<span class="badge badge-alt">Alternative option</span>' : '') +
+    '</div>' +
+    '<div class="card-name">' + item.name + '</div>' +
+    '<div class="card-city">' + item.city + '</div>' +
+    '<div class="stat-grid">' +
+    '<div class="stat"><div class="stat-label">Distance</div><div class="stat-val">' + item.miles + ' mi</div></div>' +
+    '<div class="stat"><div class="stat-label">Drive time (approx)</div><div class="stat-val">' + item.drive_hours + ' hrs</div></div>' +
+    '</div>' +
+    '<div class="meta">' + detailLabel + '</div>' +
+    '<div class="meta">' + item.note + '</div>' +
+    '</div>'
+  );
+}
+
+async function runSearch() {
+  const raw = document.getElementById('xp-input').value.trim();
+  const warn = document.getElementById('xp-warn');
+  const err = document.getElementById('xp-error');
+  const res = document.getElementById('xp-results');
+  warn.style.display='none'; err.style.display='none'; res.innerHTML='';
+  if (!raw) return;
+
+  const parsed = parseInput(raw);
+  setLoading(true);
+
+  let geo = null;
+  try { geo = await geocodeCensus(parsed.city, parsed.state); } catch(e) {}
+  if (!geo) { try { geo = await geocodeNominatim(parsed.city, parsed.state); } catch(e) {} }
+
+  setLoading(false);
+
+  if (!geo) {
+    err.textContent = 'Could not find "' + raw + '". Check the spelling or try adding the state abbreviation, e.g. "Plant City FL".';
+    err.style.display = 'block';
+    return;
+  }
+
+  const port = nearest([geo.lat, geo.lon], PORTS);
+  const rail = nearest([geo.lat, geo.lon], RAMPS);
+  const rec = recommend(port, rail);
+  const portRec = rec.pick === 'PORT';
+
+  // Recommended card always first
+  const recCard = portRec
+    ? buildCard(port, 'port', true, false)
+    : buildCard(rail, 'rail', true, false);
+  const altCard = portRec
+    ? buildCard(rail, 'rail', false, true)
+    : buildCard(port, 'port', false, true);
+
+  res.innerHTML =
+    '<div class="origin-note">Results for: <strong>' + geo.label + '</strong></div>' +
+    '<div class="section-label">Recommended move</div>' +
+    recCard +
+    '<div class="section-label" style="margin-top:12px;">Alternative option</div>' +
+    altCard +
+    '<div class="card card-verdict" style="margin-top:4px;"><div class="verdict-text">' + sRoute() + '<strong>What is the proper move here —</strong> ' + rec.reason + '</div></div>';
+}
+
+const EXAMPLES=["Edison NJ","Plant City FL","Lower Merion PA","Biron WI","Memphis TN","Nashville TN","Columbus OH","Dallas TX","Chicago IL","Kansas City MO"];
+const chips=document.getElementById('xp-chips');
+EXAMPLES.forEach(e=>{
+  const s=document.createElement('span');
+  s.className='chip'; s.textContent=e;
+  s.onclick=()=>{document.getElementById('xp-input').value=e;runSearch();};
+  chips.appendChild(s);
+});
+document.getElementById('xp-input').addEventListener('keydown',e=>{if(e.key==='Enter')runSearch();});
+</script>
+
+</body></html>
