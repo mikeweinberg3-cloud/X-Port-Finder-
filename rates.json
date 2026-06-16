@@ -1,7 +1,0 @@
-{
-  "drayage_per_mile": 3.50,
-  "minimum": 600,
-  "updated": "June 16, 2025",
-  "source": "National drayage average based on DAT/CHR/industry benchmarks for 40ft container export moves",
-  "notes": "Round trip rate per mile for 40ft container export drayage. Minimum reflects real-world floor. Update weekly."
-}
